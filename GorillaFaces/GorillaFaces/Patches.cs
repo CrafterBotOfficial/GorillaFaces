@@ -22,7 +22,13 @@ namespace GorillaFaces
 
                 // enable mirror
                 if (Main.Instance.EnableMirrorOnStartup.Value)
-                    GameObject.Find("/Level/lower level/mirror (1)").SetActive(true);
+                {
+                    GameObject mirror = GameObject.Find("/Level/lower level/mirror (1)");
+                    mirror.gameObject.SetActive(true);
+                    foreach (Collider component in mirror.GetComponentsInChildren<Collider>())
+                        GameObject.Destroy(component);
+                    mirror.GetComponentInChildren<Camera>().cullingMask = 1574134839;
+                }
             }
             else if (__instance.photonView.IsMine)
                 AttemptEquip();
