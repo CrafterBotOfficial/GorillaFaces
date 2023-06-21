@@ -23,7 +23,10 @@ namespace GorillaFaces
         internal static Main Instance;
 
         internal ManualLogSource manualLogSource => Logger;
+
+        internal ConfigEntry<bool> EnableMirrorOnStartup;
         internal ConfigEntry<string> SelectedFaceId;
+        
         internal Dictionary<string, Models.CustomFace> Faces;
 
         internal Main()
@@ -31,6 +34,7 @@ namespace GorillaFaces
             Instance = this;
             manualLogSource.LogInfo("GorillaFaces loaded");
 
+            EnableMirrorOnStartup = Config.Bind("Settings", "Enable Mirror On Startup", true);
             SelectedFaceId = Config.Bind("SaveData", "Selected Face", "");
 
             Faces = new Dictionary<string, Models.CustomFace>();
