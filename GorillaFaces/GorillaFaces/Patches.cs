@@ -9,7 +9,7 @@ namespace GorillaFaces
     internal class Patches
     {
         [HarmonyPatch(typeof(VRRig), "Start"), HarmonyPostfix, HarmonyWrapSafe]
-        private static async void Start(VRRig __instance)
+        private static void Start(VRRig __instance)
         {
             // new WaitForEndOfFrame();
 
