@@ -59,6 +59,7 @@ namespace GorillaFaces.Interface.Views
             pageHandler.EnumarateElements((item, idx) => stringBuilder.AppendLine(selectionHandler.GetIndicatedText(idx, item.Text)));
 
             //// Footer
+            stringBuilder.BeginAlign("right");
             pageHandler.AppendFooter(stringBuilder);
 
             SetText(stringBuilder);
