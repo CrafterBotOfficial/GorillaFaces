@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33723.286
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GorillaFaces", "GorillaFaces\GorillaFaces.csproj", "{4BFD5C47-91A4-408F-B259-BB0C8E400098}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FakeMaker", "FakeMaker\FakeMaker.csproj", "{0FE44657-C197-44F7-ABA8-8A1F9F753004}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4BFD5C47-91A4-408F-B259-BB0C8E400098}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BFD5C47-91A4-408F-B259-BB0C8E400098}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BFD5C47-91A4-408F-B259-BB0C8E400098}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BFD5C47-91A4-408F-B259-BB0C8E400098}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FE44657-C197-44F7-ABA8-8A1F9F753004}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FE44657-C197-44F7-ABA8-8A1F9F753004}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FE44657-C197-44F7-ABA8-8A1F9F753004}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FE44657-C197-44F7-ABA8-8A1F9F753004}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F61AF680-CBDE-4E57-9B03-5E1FE80D1EB4}
+	EndGlobalSection
+EndGlobal
