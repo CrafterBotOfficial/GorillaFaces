@@ -2,6 +2,7 @@
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using Newtonsoft.Json;
+using Photon.Pun;
 using Photon.Realtime;
 using System.Collections.Generic;
 using System.IO;
@@ -26,7 +27,7 @@ namespace GorillaFaces
 
         internal ConfigEntry<bool> EnableMirrorOnStartup;
         internal ConfigEntry<string> SelectedFaceId;
-        
+
         internal Dictionary<string, Models.CustomFace> Faces;
 
         internal Main()
@@ -46,37 +47,32 @@ namespace GorillaFaces
 
         internal void EquipFace(string Id)
         {
-            manualLogSource.LogInfo($"Equipping face {Id}");
-
             SelectedFaceId.Value = Id;
-            List<VRRig> Rigs = new List<VRRig>() { GorillaTagger.Instance.offlineVRRig };
-            if (GorillaTagger.Instance.myVRRig is object)
-                Rigs.Add(GorillaTagger.Instance.myVRRig);
 
-            EquipFace(Rigs.ToArray(), Id);
+            EquipFace(GorillaTagger.Instance.offlineVRRig, Id);
             Photon.Pun.PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { PROPERTIES_KEY, Id } });
         }
         internal void EquipFace(Player player, string Id)
         {
             if (!Faces.ContainsKey(Id))
                 return;
-            VRRig Rig = FindObjectsOfType<VRRig>().First(x => x.photonView.Owner == player);
-            EquipFace(new VRRig[] { Rig }, Id);
+            VRRig Rig = FindObjectsOfType<VRRig>().First(x => x.GetComponent<PhotonView>().Owner == player);
+            EquipFace(Rig, Id);
         }
 
-        internal void EquipFace(VRRig[] Rig, string Id)
+        internal void EquipFace(VRRig Rig, string Id)
         {
             Texture2D texture2D = Faces[Id].face;
             Material FaceMaterial = new Material(Shader.Find("Standard"));
             FaceMaterial.mainTexture = texture2D;
 
-            var enumerator = Rig.GetEnumerator();
+            /*var enumerator = Rig.GetEnumerator();
             while (enumerator.MoveNext())
-            {
-                Transform transform = (enumerator.Current as VRRig).transform.Find("rig/body/head/gorillaface");
-                manualLogSource.LogInfo(transform);
-                transform.GetComponent<MeshRenderer>().material = FaceMaterial;
-            }
+            {*/
+            Transform transform = Rig.transform.Find("rig/body/head/gorillaface");
+            manualLogSource.LogInfo(transform);
+            transform.GetComponent<MeshRenderer>().material = FaceMaterial;
+            //}
         }
 
         private async void LoadAll(string TargetDirectory)
