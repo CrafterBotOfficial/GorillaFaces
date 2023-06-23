@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using Photon.Pun;
-using Photon.Realtime;
 using System.Linq;
 using UnityEngine;
 
@@ -9,19 +8,16 @@ namespace GorillaFaces
     [HarmonyPatch]
     internal class Patches
     {
-        [HarmonyPatch(typeof(VRRig), "Start"), HarmonyPostfix, HarmonyWrapSafe]
+        [HarmonyPatch(typeof(VRRig), "OnEnable"), HarmonyPostfix, HarmonyWrapSafe]
         private static void Start(VRRig __instance)
         {
-            // new WaitForEndOfFrame();
-
-            // Load on startup
-            if (!__instance.TryGetComponent(out PhotonView component))
+            if (__instance.isOfflineVRRig)
             {
                 new GameObject("Callbacks").AddComponent<Behaviours.Callbacks>();
                 Main.Instance.Faces.ElementAt(0).Value.face = __instance.transform.Find("rig/body/head/gorillaface").GetComponent<MeshRenderer>().material.mainTexture as Texture2D;
-                AttemptEquip();
-
-                // enable mirror
+                
+                if (Main.Instance.Faces.ContainsKey(Main.Instance.SelectedFaceId.Value))
+                    Main.Instance.EquipFace(Main.Instance.SelectedFaceId.Value);
                 if (Main.Instance.EnableMirrorOnStartup.Value)
                 {
                     GameObject mirror = GameObject.Find("/Level/lower level/mirror (1)");
@@ -30,23 +26,14 @@ namespace GorillaFaces
                         GameObject.Destroy(collider);
                     mirror.GetComponentInChildren<Camera>().cullingMask = 1574134839;
                 }
-            }
-            else if (component.IsMine)
-                AttemptEquip();
-
-            // This is for equiping the face for a player that joins
-            else
-            {
-                Player player = component.Owner;
-                if (player.CustomProperties.TryGetValue(Main.PROPERTIES_KEY, out object property))
-                    Main.Instance.EquipFace(player, property as string);
+                return;
             }
 
-            void AttemptEquip()
-            {
-                if (Main.Instance.Faces.ContainsKey(Main.Instance.SelectedFaceId.Value))
-                    Main.Instance.EquipFace(Main.Instance.SelectedFaceId.Value);
-            }
+            PhotonView View = AccessTools.Field(typeof(VRRig), "photonView").GetValue(__instance) as PhotonView;
+            if (!View.Owner.CustomProperties.TryGetValue(Main.PROPERTIES_KEY, out object obj))
+                return;
+            string FaceId = obj as string;
+            Main.Instance.EquipFace(__instance, FaceId);
         }
     }
 }

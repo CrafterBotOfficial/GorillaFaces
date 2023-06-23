@@ -1,8 +1,8 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
+using HarmonyLib;
 using Newtonsoft.Json;
-using Photon.Pun;
 using Photon.Realtime;
 using System.Collections.Generic;
 using System.IO;
@@ -18,7 +18,7 @@ namespace GorillaFaces
         internal const string
             ID = "crafterbot.gorillafaces",
             NAME = "GorillaFaces",
-            VERSION = "1.0.0",
+            VERSION = "1.0.1",
             PROPERTIES_KEY = "FaceId";
 
         internal static Main Instance;
@@ -56,7 +56,7 @@ namespace GorillaFaces
         {
             if (!Faces.ContainsKey(Id))
                 return;
-            VRRig Rig = FindObjectsOfType<VRRig>().First(x => x.GetComponent<PhotonView>().Owner == player);
+            VRRig Rig = FindObjectsOfType<VRRig>().First(x => { try { Photon.Pun.PhotonView view = AccessTools.Field(typeof(VRRig), "photonView").GetValue(x) as Photon.Pun.PhotonView; return view.Owner == player; } catch { return false; } });
             EquipFace(Rig, Id);
         }
 
