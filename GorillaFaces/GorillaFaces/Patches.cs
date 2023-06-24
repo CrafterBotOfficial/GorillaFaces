@@ -29,7 +29,7 @@ namespace GorillaFaces
                 return;
             }
 
-            PhotonView View = AccessTools.Field(typeof(VRRig), "photonView").GetValue(__instance) as PhotonView;
+            PhotonView View = Traverse.Create(__instance).Field("photonView").GetValue<PhotonView>();
             if (!View.Owner.CustomProperties.TryGetValue(Main.PROPERTIES_KEY, out object obj))
                 return;
             string FaceId = obj as string;
