@@ -8,14 +8,10 @@ namespace GorillaFaces.Behaviours
     {
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
         {
-            try
+            if (!targetPlayer.IsLocal && changedProps.TryGetValue(Main.PROPERTIES_KEY, out object obj))
             {
-                base.OnPlayerPropertiesUpdate(targetPlayer, changedProps);
-                Main.Instance.EquipFace(targetPlayer, changedProps[Main.PROPERTIES_KEY] as string);
-            }
-            catch
-            {
-                /* Do nothing, this will execute every time the players properties are changing however it is not changing the face */
+                string FaceId = obj as string;
+                Main.Instance.EquipFace(GorillaGameManager.instance.FindPlayerVRRig(targetPlayer), FaceId);
             }
         }
     }

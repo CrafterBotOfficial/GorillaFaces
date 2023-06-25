@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using Photon.Pun;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace GorillaFaces
@@ -9,8 +10,10 @@ namespace GorillaFaces
     internal class Patches
     {
         [HarmonyPatch(typeof(VRRig), "OnEnable"), HarmonyPostfix, HarmonyWrapSafe]
-        private static void Start(VRRig __instance)
+        private static async void VRRigEnabled(VRRig __instance)
         {
+            await Task.Delay(1000);
+
             if (__instance.isOfflineVRRig)
             {
                 new GameObject("Callbacks").AddComponent<Behaviours.Callbacks>();

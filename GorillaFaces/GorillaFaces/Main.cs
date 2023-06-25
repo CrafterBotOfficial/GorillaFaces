@@ -1,13 +1,9 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
-using HarmonyLib;
-using Newtonsoft.Json;
-using Photon.Realtime;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using UnityEngine;
 
 namespace GorillaFaces
@@ -18,7 +14,7 @@ namespace GorillaFaces
         internal const string
             ID = "crafterbot.gorillafaces",
             NAME = "GorillaFaces",
-            VERSION = "1.0.1",
+            VERSION = "1.0.2",
             PROPERTIES_KEY = "FaceId";
 
         internal static Main Instance;
@@ -52,27 +48,25 @@ namespace GorillaFaces
             EquipFace(GorillaTagger.Instance.offlineVRRig, Id);
             Photon.Pun.PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { PROPERTIES_KEY, Id } });
         }
-        internal void EquipFace(Player player, string Id)
-        {
-            if (!Faces.ContainsKey(Id))
-                return;
-            VRRig Rig = FindObjectsOfType<VRRig>().First(x => { try { Photon.Pun.PhotonView view = AccessTools.Field(typeof(VRRig), "photonView").GetValue(x) as Photon.Pun.PhotonView; return view.Owner == player; } catch { return false; } });
-            EquipFace(Rig, Id);
-        }
 
         internal void EquipFace(VRRig Rig, string Id)
         {
+            // Validate the face id
+            if (!Faces.ContainsKey(Id))
+            {
+                manualLogSource.LogError($"Face {Id} does not exist");
+                return;
+            }
+
+            // Create the material
             Texture2D texture2D = Faces[Id].face;
             Material FaceMaterial = new Material(Shader.Find("Standard"));
             FaceMaterial.mainTexture = texture2D;
 
-            /*var enumerator = Rig.GetEnumerator();
-            while (enumerator.MoveNext())
-            {*/
+            // Equip the face
             Transform transform = Rig.transform.Find("rig/body/head/gorillaface");
             manualLogSource.LogInfo(transform);
             transform.GetComponent<MeshRenderer>().material = FaceMaterial;
-            //}
         }
 
         private async void LoadAll(string TargetDirectory)
@@ -95,7 +89,7 @@ namespace GorillaFaces
                     {
                         StreamReader PackageReader = new StreamReader(PackageStream);
                         string Package = await PackageReader.ReadToEndAsync();
-                        Models.Package PackageModel = JsonConvert.DeserializeObject<Models.Package>(Package);
+                        Models.Package PackageModel = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.Package>(Package);
 
                         StreamReader PNGReader = new StreamReader(PNGStream);
                         byte[] PNGBytes = new byte[PNG.Length];
