@@ -8,13 +8,13 @@ using UnityEngine;
 
 namespace GorillaFaces
 {
-    [BepInPlugin(ID, NAME, VERSION), BepInDependency("tonimacaroni.computerinterface"), BepInDependency("dev.auros.bepinex.bepinject")]
+    [BepInPlugin(Id, Name, Version), BepInDependency("tonimacaroni.computerinterface"), BepInDependency("dev.auros.bepinex.bepinject")]
     internal class Main : BaseUnityPlugin
     {
         internal const string
-            ID = "crafterbot.gorillafaces",
-            NAME = "GorillaFaces",
-            VERSION = "1.0.2",
+            Id = "crafterbot.gorillafaces",
+            Name = "GorillaFaces",
+            Version = "0.0.4",
             PROPERTIES_KEY = "FaceId";
 
         internal static Main Instance;
@@ -38,7 +38,7 @@ namespace GorillaFaces
             LoadAll(Directory.GetParent(typeof(Main).Assembly.Location) + "/CustomFaces");
 
             Bepinject.Zenjector.Install<Interface.MainInstaller>().OnProject();
-            new HarmonyLib.Harmony(ID).PatchAll();
+            new HarmonyLib.Harmony(Id).PatchAll();
         }
 
         internal void EquipFace(string Id)

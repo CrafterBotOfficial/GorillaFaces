@@ -34,7 +34,10 @@ namespace GorillaFaces
 
             PhotonView View = Traverse.Create(__instance).Field("photonView").GetValue<PhotonView>();
             if (!View.Owner.CustomProperties.TryGetValue(Main.PROPERTIES_KEY, out object obj))
+            {
+                Main.Instance.EquipFace(__instance, Main.Instance.Faces.First().Key); // A primative way to clean up the rig, this is due to the new object pooling system
                 return;
+            }
             string FaceId = obj as string;
             Main.Instance.EquipFace(__instance, FaceId);
         }

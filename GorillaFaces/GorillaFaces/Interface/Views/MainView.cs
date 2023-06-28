@@ -12,7 +12,7 @@ namespace GorillaFaces.Interface.Views
     {
         internal class ViewEntry : IComputerModEntry
         {
-            public string EntryName => Main.NAME;
+            public string EntryName => Main.Name;
             public Type EntryViewType => typeof(MainView);
         }
 
@@ -48,7 +48,7 @@ namespace GorillaFaces.Interface.Views
                 .BeginCenter()
                 .MakeBar('=', SCREEN_WIDTH, 0)
                 .AppendLines(1)
-                .AppendLine(Main.NAME)
+                .AppendLine(Main.Name)
                 .AppendLine($"<color={GrayColorHex}>By Crafterbot</color>")
                 .MakeBar('=', SCREEN_WIDTH, 0)
                 .EndAlign()
