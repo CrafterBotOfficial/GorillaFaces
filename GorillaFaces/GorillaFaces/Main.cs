@@ -42,8 +42,10 @@ namespace GorillaFaces
             new HarmonyLib.Harmony(Id).PatchAll();
         }
 
-        internal void OfflineRigInitialized(VRRig __instance)
+        internal async void OfflineRigInitialized(VRRig __instance)
         {
+            await System.Threading.Tasks.Task.Delay(1000);
+
             new GameObject("Callbacks").AddComponent<Behaviours.Callbacks>();
             Main.Instance.Faces.ElementAt(0).Value.face = __instance.transform.Find("rig/body/head/gorillaface").GetComponent<MeshRenderer>().material.mainTexture as Texture2D;
 
@@ -62,6 +64,7 @@ namespace GorillaFaces
         internal void EquipFace(string Id)
         {
             SelectedFaceId.Value = Id;
+            manualLogSource.LogMessage($"Equipping face {Id}");
 
             EquipFace(GorillaTagger.Instance.offlineVRRig, Id);
             Photon.Pun.PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { PROPERTIES_KEY, Id } });

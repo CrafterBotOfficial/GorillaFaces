@@ -12,7 +12,7 @@ namespace GorillaFaces
         {
             // await Task.Delay(1000);
 
-            if (__instance.isOfflineVRRig)
+            if (__instance == GorillaTagger.Instance.offlineVRRig)
             {
                 Main.Instance.OfflineRigInitialized(__instance);
                 return;
