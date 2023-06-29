@@ -4,6 +4,7 @@ using BepInEx.Logging;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using UnityEngine;
 
 namespace GorillaFaces
@@ -14,7 +15,7 @@ namespace GorillaFaces
         internal const string
             Id = "crafterbot.gorillafaces",
             Name = "GorillaFaces",
-            Version = "0.0.4",
+            Version = "0.0.5",
             PROPERTIES_KEY = "FaceId";
 
         internal static Main Instance;
@@ -39,6 +40,23 @@ namespace GorillaFaces
 
             Bepinject.Zenjector.Install<Interface.MainInstaller>().OnProject();
             new HarmonyLib.Harmony(Id).PatchAll();
+        }
+
+        internal void OfflineRigInitialized(VRRig __instance)
+        {
+            new GameObject("Callbacks").AddComponent<Behaviours.Callbacks>();
+            Main.Instance.Faces.ElementAt(0).Value.face = __instance.transform.Find("rig/body/head/gorillaface").GetComponent<MeshRenderer>().material.mainTexture as Texture2D;
+
+            if (Main.Instance.Faces.ContainsKey(Main.Instance.SelectedFaceId.Value))
+                Main.Instance.EquipFace(Main.Instance.SelectedFaceId.Value);
+            if (Main.Instance.EnableMirrorOnStartup.Value)
+            {
+                GameObject mirror = GameObject.Find("/Level/lower level/mirror (1)");
+                mirror.gameObject.SetActive(true);
+                foreach (Collider collider in mirror.GetComponentsInChildren<Collider>())
+                    GameObject.Destroy(collider);
+                mirror.GetComponentInChildren<Camera>().cullingMask = 1574134839;
+            }
         }
 
         internal void EquipFace(string Id)

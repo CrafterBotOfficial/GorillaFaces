@@ -11,7 +11,7 @@ namespace GorillaFaces.Behaviours
             if (!targetPlayer.IsLocal && changedProps.TryGetValue(Main.PROPERTIES_KEY, out object obj))
             {
                 string FaceId = obj as string;
-                Main.Instance.EquipFace(GorillaGameManager.instance.FindPlayerVRRig(targetPlayer), FaceId);
+                Main.Instance.EquipFace(GorillaGameManager.instance.FindVRRigForPlayer(targetPlayer).GetComponent<VRRig>(), FaceId);
             }
         }
     }
