@@ -15,7 +15,7 @@ namespace GorillaFaces
         internal const string
             Id = "crafterbot.gorillafaces",
             Name = "GorillaFaces",
-            Version = "0.0.5",
+            Version = "0.0.6",
             PROPERTIES_KEY = "FaceId";
 
         internal static Main Instance;
@@ -44,7 +44,7 @@ namespace GorillaFaces
 
         internal async void OfflineRigInitialized(VRRig __instance)
         {
-            await System.Threading.Tasks.Task.Delay(1000);
+            // await System.Threading.Tasks.Task.Delay(1000);
 
             new GameObject("Callbacks").AddComponent<Behaviours.Callbacks>();
             Main.Instance.Faces.ElementAt(0).Value.face = __instance.transform.Find("rig/body/head/gorillaface").GetComponent<MeshRenderer>().material.mainTexture as Texture2D;
@@ -57,7 +57,7 @@ namespace GorillaFaces
                 mirror.gameObject.SetActive(true);
                 foreach (Collider collider in mirror.GetComponentsInChildren<Collider>())
                     GameObject.Destroy(collider);
-                mirror.GetComponentInChildren<Camera>().cullingMask = 1574134839;
+                mirror.GetComponentInChildren<Camera>().cullingMask = 1788280631;
             }
         }
 
