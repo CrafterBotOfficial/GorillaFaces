@@ -15,7 +15,7 @@ namespace GorillaFaces
         internal const string
             Id = "crafterbot.gorillafaces",
             Name = "GorillaFaces",
-            Version = "0.0.6",
+            Version = "0.0.7",
             PROPERTIES_KEY = "FaceId";
 
         internal static Main Instance;
