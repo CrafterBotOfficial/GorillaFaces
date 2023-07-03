@@ -20,10 +20,7 @@ namespace GorillaFaces
             else if (__instance.isMyPlayer)
                 return;
 
-            Traverse traverse = Traverse.Create(__instance);
-            traverse.Field("photonView");
-            PhotonView View = traverse.GetValue<PhotonView>();
-            if (!View.Owner.CustomProperties.TryGetValue(Main.PROPERTIES_KEY, out object obj))
+            if (!__instance.myPlayer.CustomProperties.TryGetValue(Main.PROPERTIES_KEY, out object obj))
             {
                 Main.Instance.EquipFace(__instance, Main.Instance.Faces.First().Key); // A primative way to clean up the rig, this is due to the new "object pooling" system
                 return;
