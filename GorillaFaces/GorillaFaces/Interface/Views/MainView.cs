@@ -65,8 +65,8 @@ namespace GorillaFaces.Interface.Views
 
             Main.Log("Selected: " + FaceController.CachedFaces.ElementAt(TrueIndex).Key);
             Configuration.SelectedFace.Value = Id;
-            Photon.Pun.PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { Main.PropertyKey, Id } });
             FaceController.EquipFace(GorillaTagger.Instance.offlineVRRig, Id);
+            FaceController.UpdateCustomProperties();
         }
 
         public override void OnKeyPressed(EKeyboardKey key)

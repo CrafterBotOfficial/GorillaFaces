@@ -59,7 +59,6 @@ namespace GorillaFaces
 
         /* Data retreaving & formatting */
 
-
         internal static async void LoadFaces(bool AppendToOfflineOnFinish)
         {
             Main.Log("Loading faces...");
@@ -73,7 +72,7 @@ namespace GorillaFaces
                 Main.Log("Appending default face to the cache...");
                 Texture2D texture2D = (Texture2D)GameObject.Find("Global/Local VRRig/Local Gorilla Player/rig/body/head/gorillaface").GetComponent<MeshRenderer>().material.mainTexture;
                 Package package = new Package("Default", "Another-Axiom");
-                CachedFaces.Add(GetId(package), new CustomFace(package, texture2D));
+                CachedFaces.Add(GetId(package), new CustomFace(package, Object.Instantiate(texture2D)));
             }
 
             while (enumerator.MoveNext())
@@ -117,7 +116,13 @@ namespace GorillaFaces
             {
                 Main.Log("Auto appending face to offline VR rig.");
                 EquipFace(GorillaTagger.Instance.offlineVRRig, Configuration.SelectedFace.Value);
+                UpdateCustomProperties();
             }
+        }
+
+        internal static void UpdateCustomProperties()
+        {
+            Photon.Pun.PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { Main.PropertyKey, Configuration.SelectedFace.Value } });
         }
 
         private static string GetId(CustomFace customFaceModel)
