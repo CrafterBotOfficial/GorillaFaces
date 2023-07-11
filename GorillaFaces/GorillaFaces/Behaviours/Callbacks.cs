@@ -37,6 +37,8 @@ namespace GorillaFaces.Behaviours
 
         public override async void OnJoinedRoom()
         {
+            FaceController.PlayerRigs.Clear(); 
+
             await Task.Yield(); // Waiting for our local VRRig to be pulled from the pool
             // We need to set the face for the online rig
             // Main.Log("Joined room", BepInEx.Logging.LogLevel.Message);
@@ -46,8 +48,11 @@ namespace GorillaFaces.Behaviours
             Player[] players = PhotonNetwork.PlayerListOthers; // excludes the local player, and ordered by actor number
             foreach (Player player in players)
             {
+                FaceController.PlayerRigs.Add(player, FaceController.FindVRRigForPlayer(player));
                 if (player.CustomProperties.TryGetValue(Main.PropertyKey, out object value))
                     FaceController.EquipFace(player, (string)value);
+                else
+                    FaceController.UnEquipFace(player); // Occasionaly the rig will not be correctly cleaned up from the last posser, so we need to make sure its unequiped
             }
         }
     }

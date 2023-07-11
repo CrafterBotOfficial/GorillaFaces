@@ -19,10 +19,17 @@ namespace GorillaFaces
 
         /* VRRig equiping controllers */
 
-        internal static void UnEquipFace(Player player)
+        internal static void UnEquipFace(Player player, bool RemovePlayer = false)
         {
             VRRig Rig = FindVRRigForPlayer(player);
-            EquipFace(Rig, CachedFaces.ElementAt(0).Key);
+            if (Rig is object)
+            {
+                EquipFace(Rig, CachedFaces.ElementAt(0).Key);
+                if (RemovePlayer)
+                    PlayerRigs.Remove(player);
+                return;
+            }
+            Main.Log("It looks like the rig was never cached? Either way its not the end of the world, since it will be unequiped when the next person posses this rig.", BepInEx.Logging.LogLevel.Warning);
         }
 
         internal static void EquipFace(Player player, string Id)
