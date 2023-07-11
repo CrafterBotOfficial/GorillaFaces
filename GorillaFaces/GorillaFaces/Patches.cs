@@ -15,7 +15,12 @@ namespace GorillaFaces
         [HarmonyWrapSafe] 
         public static void VRRigCache_AddRigToGorillaParent_Postfix(Player player, VRRig vrrig)
         {
-            Main.Log("Player appears to be joining: " + player.NickName);
+            Main.Log("Player rig added to parent: " + player.NickName);
+            if (player.CustomProperties.TryGetValue(Main.PropertyKey, out object value))
+            {
+                Main.Log("Player has a face: " + player.NickName);
+                FaceController.EquipFace(player, (string)value);
+            }
         }
 
         [HarmonyPatch(typeof(GorillaTagger), "Start"), HarmonyPostfix]
