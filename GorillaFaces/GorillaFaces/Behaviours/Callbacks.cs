@@ -10,7 +10,8 @@ namespace GorillaFaces.Behaviours
         public override async void OnPlayerEnteredRoom(Player newPlayer)
         {
             await Task.Yield(); // Waiting for the VRRig to be pulled from the pool
-            FaceController.PlayerRigs.Add(newPlayer, FaceController.FindVRRigForPlayer(newPlayer));
+
+            FaceController.PlayerRigs.Add(newPlayer, FaceController.FindVRRigForPlayer(newPlayer)); // Moved this up so when someone leaves who doesnt have the mod it can still unequip the face
             if (newPlayer.CustomProperties.TryGetValue(Main.PropertyKey, out object value))
                 FaceController.EquipFace(newPlayer, (string)value);
         }
