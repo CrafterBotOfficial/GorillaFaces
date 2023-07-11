@@ -53,7 +53,8 @@ namespace GorillaFaces
 
         internal static VRRig FindVRRigForPlayer(Player player)
         {
-            return GameObject.FindObjectsOfType<VRRig>().First(x => Traverse.Create(x).Field("creator").GetValue<Player>() == player);
+            return GorillaGameManager.StaticFindRigForPlayer(player); // :P
+            // return GameObject.FindObjectsOfType<VRRig>().First(x => Traverse.Create(x).Field("creator").GetValue<Player>() == player);
         }
 
 

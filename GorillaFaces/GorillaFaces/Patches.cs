@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Photon.Realtime;
 using UnityEngine;
 
 namespace GorillaFaces
@@ -9,6 +10,12 @@ namespace GorillaFaces
         {
             VRRig rig = ((MonoBehaviour)__result).GetComponent<VRRig>();
             FaceController.Rigs.Add(rig);
+        }
+
+        [HarmonyWrapSafe] 
+        public static void VRRigCache_AddRigToGorillaParent_Postfix(Player player, VRRig vrrig)
+        {
+            Main.Log("Player appears to be joining: " + player.NickName);
         }
 
         [HarmonyPatch(typeof(GorillaTagger), "Start"), HarmonyPostfix]

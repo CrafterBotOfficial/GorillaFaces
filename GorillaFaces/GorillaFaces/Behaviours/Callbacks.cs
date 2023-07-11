@@ -7,16 +7,6 @@ namespace GorillaFaces.Behaviours
 {
     internal class Callbacks : MonoBehaviourPunCallbacks
     {
-        public override async void OnPlayerEnteredRoom(Player newPlayer)
-        {
-            await Task.Yield(); // Waiting for the VRRig to be pulled from the pool
-            Main.Log("Player entered room: " + newPlayer.NickName);
-            if (newPlayer.CustomProperties.TryGetValue(Main.PropertyKey, out object value))
-            {
-                FaceController.EquipFace(newPlayer, (string)value);
-            }
-        }
-
         public override void OnPlayerLeftRoom(Player otherPlayer)
         {
             Main.Log("Player left room: " + otherPlayer.NickName);
