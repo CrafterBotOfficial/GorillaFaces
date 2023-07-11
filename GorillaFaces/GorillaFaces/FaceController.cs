@@ -27,9 +27,10 @@ namespace GorillaFaces
 
         internal static void EquipFace(Player player, string Id)
         {
-            if (PlayerRigs.ContainsKey(player))
+            VRRig Rig = FindVRRigForPlayer(player);
+            if (Rig is object)
             {
-                EquipFace(PlayerRigs[player], Id);
+                EquipFace(Rig, Id);
                 return;
             }
             Main.Log("Player rig not found: " + player.NickName, BepInEx.Logging.LogLevel.Error);
@@ -144,7 +145,8 @@ namespace GorillaFaces
 
         private static string GetId(Package package)
         {
-            return package.Name + "_" + package.Author;
+            string Id = package.Name + "_" + package.Author;
+            return Id.Length > 250 ? Id.Substring(0, 250) : Id; // Someone could theoretically spam servers by having a extremely long name and author, this prevents that.
         }
     }
 }
