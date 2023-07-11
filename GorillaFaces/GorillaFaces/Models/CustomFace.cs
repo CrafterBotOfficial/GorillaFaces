@@ -1,21 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace GorillaFaces.Models
 {
     internal class CustomFace
     {
         internal Package Package { get; set; }
-        internal Texture2D face { get; set; }
+        internal Texture2D FaceTexture { get; set; }
+        internal Material FaceMaterial { get; set; }
 
-        internal CustomFace(Package package, Texture2D face)
+        internal CustomFace(Package package, Texture2D faceTexture, Material faceMaterial)
         {
             Package = package;
-            this.face = face;
+            FaceTexture = faceTexture;
+            FaceMaterial = faceMaterial;
         }
 
         internal string GetID()

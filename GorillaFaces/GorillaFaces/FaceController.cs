@@ -1,5 +1,4 @@
 ﻿using GorillaFaces.Models;
-using HarmonyLib;
 using Photon.Realtime;
 using System.Collections.Generic;
 using System.IO;
@@ -45,15 +44,17 @@ namespace GorillaFaces
                 return;
             }
 
-            MeshRenderer meshRenderer = Rig.transform.Find("rig/body/head/gorillaface").GetComponent<MeshRenderer>();
-            Material CustomMaterial = new Material(meshRenderer.material);
-            CustomMaterial.SetTexture("_MainTex", CachedFaces[Id].face);
-            meshRenderer.material = CustomMaterial;
+            MeshRenderer FaceRenderer = Rig.transform.Find("rig/body/head/gorillaface").GetComponent<MeshRenderer>();
+            MeshRenderer BodyRenderer = Rig.transform.Find("rig/body/gorillachest").GetComponent<MeshRenderer>();
+
+            Material NewMaterial = CachedFaces[Id].FaceMaterial;
+            FaceRenderer.material = NewMaterial;
+            BodyRenderer.material = NewMaterial;
         }
 
         internal static VRRig FindVRRigForPlayer(Player player)
         {
-            return GorillaGameManager.StaticFindRigForPlayer(player); // :P
+            return GorillaGameManager.StaticFindRigForPlayer(player); // :P - I feel like this was made for modding
             // return GameObject.FindObjectsOfType<VRRig>().First(x => Traverse.Create(x).Field("creator").GetValue<Player>() == player);
         }
 
@@ -71,9 +72,9 @@ namespace GorillaFaces
             if (AppendToOfflineOnFinish)
             {
                 Main.Log("Adding default face to the cache...");
-                Texture2D texture2D = (Texture2D)GameObject.Find("Global/Local VRRig/Local Gorilla Player/rig/body/head/gorillaface").GetComponent<MeshRenderer>().material.mainTexture;
+                Material DefaultMaterial = GameObject.Find("Global/Local VRRig/Local Gorilla Player/rig/body/head/gorillaface").GetComponent<MeshRenderer>().material;
                 Package package = new Package("Default", "Another-Axiom");
-                CachedFaces.Add(GetId(package), new CustomFace(package, Object.Instantiate(texture2D)));
+                CachedFaces.Add(GetId(package), new CustomFace(package, (Texture2D)DefaultMaterial.mainTexture, DefaultMaterial));
             }
 
             while (enumerator.MoveNext())
@@ -100,8 +101,13 @@ namespace GorillaFaces
                         byte[] buffer = new byte[imageEntry.Length];
                         imageReader.BaseStream.Read(buffer, 0, buffer.Length);
                         texture.LoadImage(buffer);
+                        texture.filterMode = FilterMode.Point; // Prevents the texture from being blurry - Credit LunaKitty for suggesting this as a fix
 
-                        CustomFace face = new CustomFace(package, texture);
+                        // Load the material
+                        Material NewMaterial = new Material(GameObject.Find("Global/Local VRRig/Local Gorilla Player/rig/body/head/gorillaface").GetComponent<MeshRenderer>().material);
+                        NewMaterial.mainTexture = texture;
+
+                        CustomFace face = new CustomFace(package, texture, NewMaterial);
                         CachedFaces.Add(GetId(face), face);
                     }
                 }
@@ -109,7 +115,7 @@ namespace GorillaFaces
                 await Task.Yield(); // Prevents the game from studdering, cough cough Kyle
             }
 
-            Main.Log("Loaded " + CachedFaces.Count + " faces.");
+            Main.Log("Loaded " + CachedFaces.Count + " faces");
             _facesLoaded = true;
 
             // AppendToOfflineOnFinish
