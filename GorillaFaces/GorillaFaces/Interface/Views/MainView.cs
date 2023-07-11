@@ -47,7 +47,7 @@ namespace GorillaFaces.Interface.Views
                 stringBuilder.AppendLine(_selectionHandler.GetIndicatedText(idx, item.Text));
             });
 
-            stringBuilder.BeginAlign("left");
+            stringBuilder.BeginAlign("right");
             _elementPageHandler.AppendFooter(stringBuilder);
 
             SetText(stringBuilder);
@@ -73,6 +73,7 @@ namespace GorillaFaces.Interface.Views
         {
             if (_selectionHandler.HandleKeypress(key) || _elementPageHandler.HandleKeyPress(key))
             {
+                _selectionHandler.CurrentSelectionIndex = UnityEngine.Mathf.Clamp(_selectionHandler.CurrentSelectionIndex, 0, _elementPageHandler.ItemsOnScreen); // force fix for overfill
                 DrawPage();
                 return;
             }
