@@ -69,7 +69,7 @@ namespace GorillaFaces
 
             if (AppendToOfflineOnFinish)
             {
-                Main.Log("Appending default face to the cache...");
+                Main.Log("Adding default face to the cache...");
                 Texture2D texture2D = (Texture2D)GameObject.Find("Global/Local VRRig/Local Gorilla Player/rig/body/head/gorillaface").GetComponent<MeshRenderer>().material.mainTexture;
                 Package package = new Package("Default", "Another-Axiom");
                 CachedFaces.Add(GetId(package), new CustomFace(package, Object.Instantiate(texture2D)));
