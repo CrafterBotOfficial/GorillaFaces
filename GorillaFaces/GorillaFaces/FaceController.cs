@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace GorillaFaces
 {
-    internal static class FaceController
+    public static class FaceController
     {
         private static bool _facesLoaded;
         internal static Dictionary<string, CustomFace> CachedFaces = new Dictionary<string, CustomFace>();
