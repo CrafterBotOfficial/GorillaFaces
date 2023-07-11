@@ -4,6 +4,7 @@ using ComputerInterface.ViewLib;
 using System;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 namespace GorillaFaces.Interface.Views
 {
@@ -17,14 +18,14 @@ namespace GorillaFaces.Interface.Views
             base.OnShow(args);
 
             TextItem[] items = FaceController.CachedFaces.Select(x => new TextItem() { Text = x.Value.Package.Name }).ToArray();
+            Main.Log(items.Length + " to display");
 
             _elementPageHandler = new UIElementPageHandler<TextItem>(EKeyboardKey.Left, EKeyboardKey.Right);
-            _elementPageHandler.SetElements(items);
             _elementPageHandler.EntriesPerPage = 5;
+            _elementPageHandler.SetElements(items);
 
             _selectionHandler = new UISelectionHandler(EKeyboardKey.Up, EKeyboardKey.Down, EKeyboardKey.Enter);
             _selectionHandler.OnSelected += selectionHandler_OnSelected;
-            _selectionHandler.MaxIdx = _elementPageHandler.EntriesPerPage;
             _selectionHandler.ConfigureSelectionIndicator("<color=#ed6540>> </color>", "", "  ", "");
 
             DrawPage();
@@ -48,11 +49,10 @@ namespace GorillaFaces.Interface.Views
             });
 
             // footer
-            stringBuilder
-                .BeginAlign("right")
-                .AppendLines(SCREEN_HEIGHT - _elementPageHandler.ItemsOnScreen) // exclusive, so the footer will be on the last line
-                .Append($"{_elementPageHandler.CurrentPage}/{_elementPageHandler.MaxPage}"); 
+            stringBuilder.BeginAlign("right");
+            _elementPageHandler.AppendFooter(stringBuilder);
 
+            _selectionHandler.MaxIdx = _elementPageHandler.ItemsOnScreen - 1;
             SetText(stringBuilder);
         }
 
@@ -66,7 +66,7 @@ namespace GorillaFaces.Interface.Views
 
             string Id = FaceController.CachedFaces.ElementAt(TrueIndex).Key;
 
-            Main.Log("Selected: " + FaceController.CachedFaces.ElementAt(TrueIndex).Key);
+            Main.Log("Selected: " + Id);
             Configuration.SelectedFace.Value = Id;
             FaceController.EquipFace(GorillaTagger.Instance.offlineVRRig, Id);
             FaceController.UpdateCustomProperties();
@@ -76,7 +76,6 @@ namespace GorillaFaces.Interface.Views
         {
             if (_selectionHandler.HandleKeypress(key) || _elementPageHandler.HandleKeyPress(key))
             {
-                _selectionHandler.CurrentSelectionIndex = UnityEngine.Mathf.Clamp(_selectionHandler.CurrentSelectionIndex, 0, _elementPageHandler.ItemsOnScreen - 1); // force fix for overfill
                 DrawPage();
                 return;
             }
