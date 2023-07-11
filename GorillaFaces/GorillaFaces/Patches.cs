@@ -1,32 +1,30 @@
 ﻿using HarmonyLib;
-using Photon.Pun;
-using System.Linq;
+using UnityEngine;
 
 namespace GorillaFaces
 {
-    [HarmonyPatch]
-    internal class Patches
+    internal static class Patches
     {
-        [HarmonyPatch(typeof(VRRig), "OnEnable"), HarmonyPostfix, HarmonyWrapSafe]
-        private static async void VRRig_OnEnable(VRRig __instance)
+        public static void VRRigCache_SpawnRig_Postfix(object __result)
         {
-            await System.Threading.Tasks.Task.Delay(1000); // Wait for the photonView to be set
+            VRRig rig = ((MonoBehaviour)__result).GetComponent<VRRig>();
+            FaceController.Rigs.Add(rig);
+        }
 
-            if (__instance == GorillaTagger.Instance.offlineVRRig)
-            {
-                Main.Instance.OfflineRigInitialized(__instance);
-                return;
-            }
-            else if (__instance.isMyPlayer)
-                return;
+        [HarmonyPatch(typeof(GorillaTagger), "Start"), HarmonyPostfix]
+        private static void GorillaTagger_Start_Postfix()
+        {
+            new GameObject("Callbacks").AddComponent<Behaviours.Callbacks>();
+            FaceController.LoadFaces(true);
 
-            if (!__instance.myPlayer.CustomProperties.TryGetValue(Main.PROPERTIES_KEY, out object obj))
+            if (Configuration.EnableMirrorOnStartup.Value)
             {
-                Main.Instance.EquipFace(__instance, Main.Instance.Faces.First().Key); // A primative way to clean up the rig, this is due to the new "object pooling" system
-                return;
+                GameObject mirror = GameObject.Find("/Level/lower level/mirror (1)");
+                mirror.gameObject.SetActive(true);
+                foreach (Collider collider in mirror.GetComponentsInChildren<Collider>())
+                    GameObject.Destroy(collider);
+                mirror.GetComponentInChildren<Camera>().cullingMask = 1788280631;
             }
-            string FaceId = obj as string;
-            Main.Instance.EquipFace(__instance, FaceId);
         }
     }
 }

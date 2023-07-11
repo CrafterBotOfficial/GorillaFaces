@@ -7,7 +7,7 @@ namespace GorillaFaces.Interface
     {
         public override void InstallBindings()
         {
-            Container.Bind<IComputerModEntry>().To<Views.MainView.ViewEntry>().AsSingle();
+            Container.Bind<IComputerModEntry>().To<Views.MainView.Entry>().AsSingle();
         }
     }
 }

@@ -1,18 +1,47 @@
 ﻿using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
+using System.Threading.Tasks;
 
 namespace GorillaFaces.Behaviours
 {
     internal class Callbacks : MonoBehaviourPunCallbacks
     {
+        public override async void OnPlayerEnteredRoom(Player newPlayer)
+        {
+            await Task.Yield(); // Waiting for the VRRig to be pulled from the pool
+            Main.Log("Player entered room: " + newPlayer.NickName);
+            if (newPlayer.CustomProperties.TryGetValue(Main.PropertyKey, out object value))
+            {
+                FaceController.EquipFace(newPlayer, (string)value);
+            }
+        }
+
+        public override void OnPlayerLeftRoom(Player otherPlayer)
+        {
+            Main.Log("Player left room: " + otherPlayer.NickName);
+            if (otherPlayer.CustomProperties.TryGetValue(Main.PropertyKey, out object value))
+            {
+                Main.Log("Cleaning up face for " + otherPlayer.NickName);
+                FaceController.UnEquipFace(otherPlayer);
+            }
+        }
+
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
         {
-            if (!targetPlayer.IsLocal && changedProps.TryGetValue(Main.PROPERTIES_KEY, out object obj))
+            Main.Log("Player properties updated: " + targetPlayer.NickName);
+            if (changedProps.TryGetValue(Main.PropertyKey, out object value))
             {
-                string FaceId = obj as string;
-                Main.Instance.EquipFace(GorillaGameManager.instance.FindVRRigForPlayer(targetPlayer).GetComponent<VRRig>(), FaceId);
+                FaceController.EquipFace(targetPlayer, (string)value);
             }
+        }
+
+        public override async void OnJoinedRoom()
+        {
+            await Task.Yield(); // Waiting for the VRRig to be pulled from the pool
+            // We need to set the face for the online rig
+            Main.Log("Joined room", BepInEx.Logging.LogLevel.Message);
+            FaceController.EquipFace(PhotonNetwork.LocalPlayer, Configuration.SelectedFace.Value);
         }
     }
 }

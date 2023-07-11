@@ -94,6 +94,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Behaviours\Callbacks.cs" />
+    <Compile Include="Configuration.cs" />
+    <Compile Include="FaceController.cs" />
     <Compile Include="Interface\MainInstaller.cs" />
     <Compile Include="Interface\Views\MainView.cs" />
     <Compile Include="Main.cs" />

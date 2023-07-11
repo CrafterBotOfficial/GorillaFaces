@@ -17,5 +17,10 @@ namespace GorillaFaces.Models
             Package = package;
             this.face = face;
         }
+
+        internal string GetID()
+        {
+            return Package.Name + "_" + Package.Author;
+        }
     }
 }

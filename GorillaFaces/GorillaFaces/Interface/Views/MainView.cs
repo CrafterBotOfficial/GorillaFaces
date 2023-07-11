@@ -2,7 +2,6 @@
 using ComputerInterface.Interfaces;
 using ComputerInterface.ViewLib;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -10,31 +9,23 @@ namespace GorillaFaces.Interface.Views
 {
     internal class MainView : ComputerView
     {
-        internal class ViewEntry : IComputerModEntry
-        {
-            public string EntryName => Main.Name;
-            public Type EntryViewType => typeof(MainView);
-        }
-
-        private const string GrayColorHex = "#ffffff50";
-
-        private UIElementPageHandler<TextItem> pageHandler;
-        private UISelectionHandler selectionHandler;
+        private UIElementPageHandler<TextItem> _elementPageHandler;
+        private UISelectionHandler _selectionHandler;
 
         public override void OnShow(object[] args)
         {
             base.OnShow(args);
 
-            List<TextItem> elements = Main.Instance.Faces.Select(x => new TextItem(x.Value.Package.Name)).ToList();
+            TextItem[] items = FaceController.CachedFaces.Select(x => new TextItem() { Text = x.Value.Package.Name }).ToArray();
 
-            pageHandler = new UIElementPageHandler<TextItem>(EKeyboardKey.Left, EKeyboardKey.Right);
-            pageHandler.EntriesPerPage = 5;
-            pageHandler.SetElements(elements.ToArray());
+            _elementPageHandler = new UIElementPageHandler<TextItem>(EKeyboardKey.Left, EKeyboardKey.Right);
+            _elementPageHandler.SetElements(items);
+            _elementPageHandler.EntriesPerPage = 5;
 
-            selectionHandler = new UISelectionHandler(EKeyboardKey.Up, EKeyboardKey.Down, EKeyboardKey.Enter);
-            selectionHandler.MaxIdx = pageHandler.EntriesPerPage - 1;
-            selectionHandler.OnSelected += SelectionHandler_OnSelected;
-            selectionHandler.ConfigureSelectionIndicator("<color=#ed6540>> </color>", "", "  ", "");
+            _selectionHandler = new UISelectionHandler(EKeyboardKey.Up, EKeyboardKey.Down, EKeyboardKey.Enter);
+            _selectionHandler.OnSelected += selectionHandler_OnSelected;
+            _selectionHandler.MaxIdx = _elementPageHandler.EntriesPerPage;
+            _selectionHandler.ConfigureSelectionIndicator("<color=#ed6540>> </color>", "", "  ", "");
 
             DrawPage();
         }
@@ -42,59 +33,64 @@ namespace GorillaFaces.Interface.Views
         private void DrawPage()
         {
             StringBuilder stringBuilder = new StringBuilder();
-
-            //// Header
             stringBuilder
                 .BeginCenter()
                 .MakeBar('=', SCREEN_WIDTH, 0)
-                .AppendLines(1)
-                .AppendLine(Main.Name)
-                .AppendLine($"<color={GrayColorHex}>By Crafterbot</color>")
+                .Append("\nGorillaFaces\nBy Crafterbot\n")
                 .MakeBar('=', SCREEN_WIDTH, 0)
-                .EndAlign()
                 .AppendLines(2)
                 ;
 
-            //// Body
-            pageHandler.EnumarateElements((item, idx) => stringBuilder.AppendLine(selectionHandler.GetIndicatedText(idx, item.Text)));
+            stringBuilder.BeginAlign("left");
+            _elementPageHandler.EnumarateElements((item, idx) =>
+            {
+                stringBuilder.AppendLine(_selectionHandler.GetIndicatedText(idx, item.Text));
+            });
 
-            //// Footer
-            stringBuilder.BeginAlign("right");
-            pageHandler.AppendFooter(stringBuilder);
+            stringBuilder.BeginAlign("left");
+            _elementPageHandler.AppendFooter(stringBuilder);
 
             SetText(stringBuilder);
         }
 
-        /* Handle methods */
+        /* Handlers */
 
-        private void SelectionHandler_OnSelected(int obj)
+        private void selectionHandler_OnSelected(int obj)
         {
-            int AbsoluteIndex = pageHandler.GetAbsoluteIndex(obj);
-            string Id = Main.Instance.Faces.ElementAt(AbsoluteIndex).Key;
-            Main.Instance.EquipFace(Id);
+            int TrueIndex = _elementPageHandler.GetAbsoluteIndex(obj);
+            if (TrueIndex > FaceController.CachedFaces.Count - 1)
+                return;
+
+            string Id = FaceController.CachedFaces.ElementAt(TrueIndex).Key;
+
+            Main.Log("Selected: " + FaceController.CachedFaces.ElementAt(TrueIndex).Key);
+            Configuration.SelectedFace.Value = Id;
+            Photon.Pun.PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { Main.PropertyKey, Id } });
+            FaceController.EquipFace(GorillaTagger.Instance.offlineVRRig, Id);
         }
 
         public override void OnKeyPressed(EKeyboardKey key)
         {
-            base.OnKeyPressed(key);
-
-            if (pageHandler.HandleKeyPress(key) || selectionHandler.HandleKeypress(key))
+            if (_selectionHandler.HandleKeypress(key) || _elementPageHandler.HandleKeyPress(key))
             {
                 DrawPage();
                 return;
             }
 
-            if (key == EKeyboardKey.Back)
-                ReturnToMainMenu();
+            ReturnToMainMenu();
         }
 
-        internal class TextItem
+        /* Models & Entry point */
+
+        class TextItem
         {
-            internal string Text;
-            internal TextItem(string text)
-            {
-                Text = text;
-            }
+            internal string Text { get; set; }
+        }
+
+        internal class Entry : IComputerModEntry
+        {
+            string IComputerModEntry.EntryName => "GorillaFaces";
+            Type IComputerModEntry.EntryViewType => typeof(MainView);
         }
     }
 }
