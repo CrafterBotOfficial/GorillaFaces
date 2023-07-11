@@ -10,11 +10,9 @@ namespace GorillaFaces.Behaviours
         public override async void OnPlayerEnteredRoom(Player newPlayer)
         {
             await Task.Yield(); // Waiting for the VRRig to be pulled from the pool
+            FaceController.PlayerRigs.Add(newPlayer, FaceController.FindVRRigForPlayer(newPlayer));
             if (newPlayer.CustomProperties.TryGetValue(Main.PropertyKey, out object value))
-            {
-                FaceController.PlayerRigs.Add(newPlayer, FaceController.FindVRRigForPlayer(newPlayer));
                 FaceController.EquipFace(newPlayer, (string)value);
-            }
         }
 
         public override void OnPlayerLeftRoom(Player otherPlayer)
