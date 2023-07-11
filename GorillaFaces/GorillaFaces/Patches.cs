@@ -5,7 +5,7 @@ namespace GorillaFaces
 {
     internal static class Patches
     {
-        // Just going to use callbacks for this, should be more reliable though ugly and repetitive
+        // Just going to use callbacks for this, should be more reliable, though ugly and repetitive
 
         /*[HarmonyWrapSafe] 
         public static void VRRigCache_AddRigToGorillaParent_Postfix(Player player, VRRig vrrig)
