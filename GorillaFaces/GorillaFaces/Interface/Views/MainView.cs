@@ -47,8 +47,11 @@ namespace GorillaFaces.Interface.Views
                 stringBuilder.AppendLine(_selectionHandler.GetIndicatedText(idx, item.Text));
             });
 
-            stringBuilder.BeginAlign("right");
-            _elementPageHandler.AppendFooter(stringBuilder);
+            // footer
+            stringBuilder
+                .BeginAlign("right")
+                .AppendLines(SCREEN_HEIGHT - _elementPageHandler.ItemsOnScreen) // exclusive, so the footer will be on the last line
+                .Append($"{_elementPageHandler.CurrentPage}/{_elementPageHandler.MaxPage}"); 
 
             SetText(stringBuilder);
         }
@@ -73,7 +76,7 @@ namespace GorillaFaces.Interface.Views
         {
             if (_selectionHandler.HandleKeypress(key) || _elementPageHandler.HandleKeyPress(key))
             {
-                _selectionHandler.CurrentSelectionIndex = UnityEngine.Mathf.Clamp(_selectionHandler.CurrentSelectionIndex, 0, _elementPageHandler.ItemsOnScreen); // force fix for overfill
+                _selectionHandler.CurrentSelectionIndex = UnityEngine.Mathf.Clamp(_selectionHandler.CurrentSelectionIndex, 0, _elementPageHandler.ItemsOnScreen - 1); // force fix for overfill
                 DrawPage();
                 return;
             }
