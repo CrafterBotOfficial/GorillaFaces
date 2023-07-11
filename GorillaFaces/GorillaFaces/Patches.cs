@@ -1,18 +1,13 @@
 ﻿using HarmonyLib;
-using Photon.Realtime;
 using UnityEngine;
 
 namespace GorillaFaces
 {
     internal static class Patches
     {
-        public static void VRRigCache_SpawnRig_Postfix(object __result)
-        {
-            VRRig rig = ((MonoBehaviour)__result).GetComponent<VRRig>();
-            FaceController.Rigs.Add(rig);
-        }
+        // Just going to use callbacks for this, should be more reliable though ugly and repetitive
 
-        [HarmonyWrapSafe] 
+        /*[HarmonyWrapSafe] 
         public static void VRRigCache_AddRigToGorillaParent_Postfix(Player player, VRRig vrrig)
         {
             Main.Log("Player rig added to parent: " + player.NickName);
@@ -21,7 +16,7 @@ namespace GorillaFaces
                 Main.Log("Player has a face: " + player.NickName);
                 FaceController.EquipFace(player, (string)value);
             }
-        }
+        }*/
 
         [HarmonyPatch(typeof(GorillaTagger), "Start"), HarmonyPostfix]
         private static void GorillaTagger_Start_Postfix()

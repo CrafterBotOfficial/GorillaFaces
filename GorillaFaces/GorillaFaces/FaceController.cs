@@ -14,8 +14,8 @@ namespace GorillaFaces
         private static bool _facesLoaded;
         internal static Dictionary<string, CustomFace> CachedFaces = new Dictionary<string, CustomFace>();
 
-        internal static List<VRRig> Rigs = new List<VRRig>();
-        // internal static Dictionary<Player, VRRig> PlayerRigs = new Dictionary<Player, VRRig>();
+        // This is really required because the GameManager has a safe method for retreiving the VRRig for a player, however this should be slightly more efficent and robust.
+        internal static Dictionary<Player, VRRig> PlayerRigs = new Dictionary<Player, VRRig>();
 
         /* VRRig equiping controllers */
 
@@ -27,8 +27,12 @@ namespace GorillaFaces
 
         internal static void EquipFace(Player player, string Id)
         {
-            VRRig Rig = FindVRRigForPlayer(player);
-            EquipFace(Rig, Id);
+            if (PlayerRigs.ContainsKey(player))
+            {
+                EquipFace(PlayerRigs[player], Id);
+                return;
+            }
+            Main.Log("Player rig not found: " + player.NickName, BepInEx.Logging.LogLevel.Error);
         }
 
         internal static void EquipFace(VRRig Rig, string Id)
@@ -54,8 +58,9 @@ namespace GorillaFaces
 
         internal static VRRig FindVRRigForPlayer(Player player)
         {
+            if (PlayerRigs.ContainsKey(player))
+                return PlayerRigs[player];
             return GorillaGameManager.StaticFindRigForPlayer(player); // :P - I feel like this was made for modding
-            // return GameObject.FindObjectsOfType<VRRig>().First(x => Traverse.Create(x).Field("creator").GetValue<Player>() == player);
         }
 
 

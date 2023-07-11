@@ -1,5 +1,8 @@
-﻿using BepInEx;
-using System;
+﻿/*
+    Fix incompatbility with holdablepad *done?*
+    Redo networking code for joining and player joining **done**
+*/
+using BepInEx;
 
 namespace GorillaFaces
 {
@@ -17,15 +20,11 @@ namespace GorillaFaces
 
             Bepinject.Zenjector.Install<Interface.MainInstaller>().OnProject();
 
-            // Harmony - Since most of these types are internal, we need to use reflection to get them.
-
-            Type RigCache = typeof(GorillaTagger).Assembly.GetType("VRRigCache");
-            System.Reflection.MethodInfo SpawnRigInfo = RigCache.GetMethod("SpawnRig", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            System.Reflection.MethodInfo AddRigToGorillaParent = RigCache.GetMethod("AddRigToGorillaParent", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            // Harmony
 
             var harmony = new HarmonyLib.Harmony(Info.Metadata.GUID);
-            harmony.Patch(SpawnRigInfo, postfix: new HarmonyLib.HarmonyMethod(typeof(Patches).GetMethod("VRRigCache_SpawnRig_Postfix")));
-            harmony.Patch(AddRigToGorillaParent, postfix: new HarmonyLib.HarmonyMethod(typeof(Patches).GetMethod("VRRigCache_AddRigToGorillaParent_Postfix")));
+            /*harmony.Patch(SpawnRigInfo, postfix: new HarmonyLib.HarmonyMethod(typeof(Patches).GetMethod("VRRigCache_SpawnRig_Postfix")));
+            harmony.Patch(AddRigToGorillaParent, postfix: new HarmonyLib.HarmonyMethod(typeof(Patches).GetMethod("VRRigCache_AddRigToGorillaParent_Postfix")));*/
             harmony.PatchAll(typeof(Patches));
         }
 
