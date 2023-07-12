@@ -5,19 +5,6 @@ namespace GorillaFaces
 {
     internal static class Patches
     {
-        // Just going to use callbacks for this, should be more reliable, though ugly and repetitive
-
-        /*[HarmonyWrapSafe] 
-        public static void VRRigCache_AddRigToGorillaParent_Postfix(Player player, VRRig vrrig)
-        {
-            Main.Log("Player rig added to parent: " + player.NickName);
-            if (player.CustomProperties.TryGetValue(Main.PropertyKey, out object value))
-            {
-                Main.Log("Player has a face: " + player.NickName);
-                FaceController.EquipFace(player, (string)value);
-            }
-        }*/
-
         [HarmonyPatch(typeof(GorillaTagger), "Start"), HarmonyPostfix]
         private static void GorillaTagger_Start_Postfix()
         {

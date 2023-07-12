@@ -23,8 +23,6 @@ namespace GorillaFaces
             // Harmony
 
             var harmony = new HarmonyLib.Harmony(Info.Metadata.GUID);
-            /*harmony.Patch(SpawnRigInfo, postfix: new HarmonyLib.HarmonyMethod(typeof(Patches).GetMethod("VRRigCache_SpawnRig_Postfix")));
-            harmony.Patch(AddRigToGorillaParent, postfix: new HarmonyLib.HarmonyMethod(typeof(Patches).GetMethod("VRRigCache_AddRigToGorillaParent_Postfix")));*/
             harmony.PatchAll(typeof(Patches));
         }
 
@@ -34,3 +32,9 @@ namespace GorillaFaces
         }
     }
 }
+
+/*
+ * Moved to callbacks
+harmony.Patch(SpawnRigInfo, postfix: new HarmonyLib.HarmonyMethod(typeof(Patches).GetMethod("VRRigCache_SpawnRig_Postfix")));
+harmony.Patch(AddRigToGorillaParent, postfix: new HarmonyLib.HarmonyMethod(typeof(Patches).GetMethod("VRRigCache_AddRigToGorillaParent_Postfix")));
+*/

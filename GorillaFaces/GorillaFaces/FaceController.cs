@@ -14,22 +14,27 @@ namespace GorillaFaces
         private static bool _facesLoaded;
         internal static Dictionary<string, CustomFace> CachedFaces = new Dictionary<string, CustomFace>();
 
-        // This is really required because the GameManager has a safe method for retreiving the VRRig for a player, however this should be slightly more efficent and robust.
-        internal static Dictionary<Player, VRRig> PlayerRigs = new Dictionary<Player, VRRig>();
-
         /* VRRig equiping controllers */
 
-        internal static void UnEquipFace(Player player, bool RemovePlayer = false)
+        internal static void UnEquipFace(Player player)
         {
             VRRig Rig = FindVRRigForPlayer(player);
             if (Rig is object)
             {
                 EquipFace(Rig, CachedFaces.ElementAt(0).Key);
-                if (RemovePlayer)
-                    PlayerRigs.Remove(player);
-                return;
             }
             Main.Log("It looks like the rig was never cached? Either way its not the end of the world, since it will be unequiped when the next person posses this rig.", BepInEx.Logging.LogLevel.Warning);
+        }
+
+        /// <summary>
+        /// Attempts to equip a face to the client, if the player doesn't have the mod it will unequip current face to clean up.
+        /// </summary>
+        internal static void AttemptEquip(Player player)
+        {
+            if (player.CustomProperties.TryGetValue(Main.PropertyKey, out object value))
+                EquipFace(player, (string)value);
+            else
+                UnEquipFace(player);
         }
 
         internal static void EquipFace(Player player, string Id)
@@ -66,8 +71,6 @@ namespace GorillaFaces
 
         internal static VRRig FindVRRigForPlayer(Player player)
         {
-            if (PlayerRigs.ContainsKey(player))
-                return PlayerRigs[player];
             return GorillaGameManager.StaticFindRigForPlayer(player); // :P - I feel like this was made for modding
         }
 
