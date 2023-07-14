@@ -22,6 +22,7 @@ namespace GorillaFaces
             if (Rig is object)
             {
                 EquipFace(Rig, CachedFaces.ElementAt(0).Key);
+                return;
             }
             Main.Log("It looks like the rig was never cached? Either way its not the end of the world, since it will be unequiped when the next person posses this rig.", BepInEx.Logging.LogLevel.Warning);
         }
