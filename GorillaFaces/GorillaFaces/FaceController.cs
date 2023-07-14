@@ -59,6 +59,7 @@ namespace GorillaFaces
             if (!CachedFaces.ContainsKey(Id))
             {
                 Main.Log("Face not found: " + Id, BepInEx.Logging.LogLevel.Warning);
+                EquipFace(Rig, CachedFaces.ElementAt(0).Key); // Incase the rig already has a face, we need to clean it up
                 return;
             }
 
