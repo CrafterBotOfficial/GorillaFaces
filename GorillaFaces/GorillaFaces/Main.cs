@@ -6,7 +6,7 @@ using BepInEx;
 
 namespace GorillaFaces
 {
-    [BepInPlugin("crafterbot.gorillafaces", "GorillaFaces", "1.0.0"), BepInDependency("tonimacaroni.computerinterface"), BepInDependency("dev.auros.bepinex.bepinject")]
+    [BepInPlugin("crafterbot.gorillafaces", "GorillaFaces", "1.0.1"), BepInDependency("tonimacaroni.computerinterface"), BepInDependency("dev.auros.bepinex.bepinject")]
     [BepInIncompatibility("com.dev9998.gorillatag.devblinkmod")]
     internal class Main : BaseUnityPlugin
     {
