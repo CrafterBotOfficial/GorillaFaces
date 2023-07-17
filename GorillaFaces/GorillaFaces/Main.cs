@@ -28,7 +28,9 @@ namespace GorillaFaces
 
         internal static void Log(object message, BepInEx.Logging.LogLevel logLevel = BepInEx.Logging.LogLevel.Info)
         {
+#if DEBUG
             _instance.Logger.Log(logLevel, message);
+#endif
         }
     }
 }

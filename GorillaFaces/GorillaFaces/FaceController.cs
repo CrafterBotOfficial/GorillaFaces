@@ -79,7 +79,7 @@ namespace GorillaFaces
 
         /* Data retreaving & formatting */
 
-        internal static async void LoadFaces(bool AppendToOfflineOnFinish)
+        internal static async void LoadFaces()
         {
             Main.Log("Loading faces...");
             CachedFaces.Clear();
@@ -87,13 +87,10 @@ namespace GorillaFaces
             string path = Path.Combine(Directory.GetParent(typeof(FaceController).Assembly.Location).FullName, "CustomFaces");
             var enumerator = Directory.GetFiles(path, "*.Face").GetEnumerator();
 
-            if (AppendToOfflineOnFinish)
-            {
-                Main.Log("Adding default face to the cache...");
-                Material DefaultMaterial = GameObject.Find("Global/Local VRRig/Local Gorilla Player/rig/body/head/gorillaface").GetComponent<MeshRenderer>().material;
-                Package package = new Package("Default", "Another-Axiom");
-                CachedFaces.Add(GetId(package), new CustomFace(package, (Texture2D)DefaultMaterial.mainTexture, DefaultMaterial));
-            }
+            Main.Log("Adding default face to the cache...");
+            Material DefaultMaterial = GameObject.Find("Global/Local VRRig/Local Gorilla Player/rig/body/head/gorillaface").GetComponent<MeshRenderer>().material;
+            Package DefaultPackage = new Package("Default", "Another-Axiom");
+            CachedFaces.Add(GetId(DefaultPackage), new CustomFace(DefaultPackage, (Texture2D)DefaultMaterial.mainTexture, DefaultMaterial));
 
             while (enumerator.MoveNext())
             {
@@ -122,7 +119,7 @@ namespace GorillaFaces
                         texture.filterMode = FilterMode.Point; // Prevents the texture from being blurry - Credit LunaKitty for suggesting this as a fix
 
                         // Load the material
-                        Material NewMaterial = new Material(GameObject.Find("Global/Local VRRig/Local Gorilla Player/rig/body/head/gorillaface").GetComponent<MeshRenderer>().material);
+                        Material NewMaterial = new Material(DefaultMaterial);
                         NewMaterial.mainTexture = texture;
 
                         CustomFace face = new CustomFace(package, texture, NewMaterial);
@@ -136,13 +133,10 @@ namespace GorillaFaces
             Main.Log("Loaded " + CachedFaces.Count + " faces");
             _facesLoaded = true;
 
-            // AppendToOfflineOnFinish
-            if (AppendToOfflineOnFinish && GorillaTagger.hasInstance)
-            {
-                Main.Log("Auto appending face to offline VR rig.");
-                EquipFace(GorillaTagger.Instance.offlineVRRig, Configuration.SelectedFace.Value);
-                UpdateCustomProperties();
-            }
+            // Append To Offline On Finish
+            Main.Log("Auto appending face to offline VR rig.");
+            EquipFace(GorillaTagger.Instance.offlineVRRig, Configuration.SelectedFace.Value);
+            UpdateCustomProperties();
         }
 
         internal static void UpdateCustomProperties()

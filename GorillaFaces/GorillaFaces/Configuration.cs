@@ -2,7 +2,7 @@
 
 namespace GorillaFaces
 {
-    internal class Configuration
+    internal static class Configuration
     {
         internal static ConfigEntry<string> SelectedFace;
         internal static ConfigEntry<bool> EnableMirrorOnStartup;

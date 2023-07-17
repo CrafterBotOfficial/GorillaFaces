@@ -9,8 +9,9 @@ namespace GorillaFaces
         private static void GorillaTagger_Start_Postfix()
         {
             new GameObject("Callbacks").AddComponent<Behaviours.Callbacks>();
-            FaceController.LoadFaces(true);
+            FaceController.LoadFaces();
 
+            // Load the mirror if the configuration option is enabled
             if (Configuration.EnableMirrorOnStartup.Value)
             {
                 GameObject mirror = GameObject.Find("/Level/lower level/mirror (1)");
