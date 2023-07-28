@@ -14,7 +14,7 @@ namespace GorillaFaces
             // Load the mirror if the configuration option is enabled
             if (Configuration.EnableMirrorOnStartup.Value)
             {
-                GameObject mirror = GameObject.Find("/Level/lower level/mirror (1)");
+                GameObject mirror = GameObject.Find("Environment Objects/LocalObjects_Prefab/TreeRoom/TreeRoomInteractables/mirror (1)/");
                 mirror.gameObject.SetActive(true);
                 foreach (Collider collider in mirror.GetComponentsInChildren<Collider>())
                     GameObject.Destroy(collider);

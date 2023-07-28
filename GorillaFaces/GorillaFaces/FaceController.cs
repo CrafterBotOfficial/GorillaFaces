@@ -88,7 +88,7 @@ namespace GorillaFaces
             var enumerator = Directory.GetFiles(path, "*.Face").GetEnumerator();
 
             Main.Log("Adding default face to the cache...");
-            Material DefaultMaterial = GameObject.Find("Global/Local VRRig/Local Gorilla Player/rig/body/head/gorillaface").GetComponent<MeshRenderer>().material;
+            Material DefaultMaterial = GameObject.Find("Player Objects/Local VRRig/Local Gorilla Player/rig/body/head/gorillaface").GetComponent<MeshRenderer>().material;
             Package DefaultPackage = new Package("Default", "Another-Axiom");
             CachedFaces.Add(GetId(DefaultPackage), new CustomFace(DefaultPackage, (Texture2D)DefaultMaterial.mainTexture, DefaultMaterial));
 
