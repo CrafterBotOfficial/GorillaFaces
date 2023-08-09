@@ -6,7 +6,7 @@ using BepInEx;
 
 namespace GorillaFaces
 {
-    [BepInPlugin("crafterbot.gorillafaces", "GorillaFaces", "1.0.2"), BepInDependency("tonimacaroni.computerinterface"), BepInDependency("dev.auros.bepinex.bepinject")]
+    [BepInPlugin("crafterbot.gorillafaces", "GorillaFaces", "1.0.3"), BepInDependency("tonimacaroni.computerinterface"), BepInDependency("dev.auros.bepinex.bepinject")]
     [BepInIncompatibility("com.dev9998.gorillatag.devblinkmod")]
     internal class Main : BaseUnityPlugin
     {
@@ -22,10 +22,15 @@ namespace GorillaFaces
             new HarmonyLib.Harmony(Info.Metadata.GUID).PatchAll(typeof(Patches));
         }
 
-        internal static void Log(object message, BepInEx.Logging.LogLevel logLevel = BepInEx.Logging.LogLevel.Info)
+        internal static void Log(object data, BepInEx.Logging.LogLevel logLevel = BepInEx.Logging.LogLevel.Info)
         {
 #if DEBUG
-            _instance.Logger.Log(logLevel, message);
+            if (_instance is object)
+            {
+                _instance.Logger.Log(logLevel, data);
+                return;
+            }
+            UnityEngine.Debug.Log(" [Gorilla Faces]: " + data);
 #endif
         }
     }

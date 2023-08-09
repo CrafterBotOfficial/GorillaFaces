@@ -16,7 +16,10 @@ namespace GorillaFaces.Behaviours
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
         {
             if (changedProps.TryGetValue(Main.PropertyKey, out object obj))
+            {
+                Main.Log("Got face update event for " + targetPlayer.NickName + " with value " + (string)obj, BepInEx.Logging.LogLevel.Message);
                 FaceController.EquipFace(targetPlayer, (string)obj);
+            }
         }
 
         public override async void OnJoinedRoom()
