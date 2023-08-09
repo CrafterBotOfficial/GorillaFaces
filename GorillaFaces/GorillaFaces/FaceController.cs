@@ -152,7 +152,7 @@ namespace GorillaFaces
         private static string GetId(Package package)
         {
             string Id = package.Name + "_" + package.Author;
-            return Id.Substring(0, 25); // Someone could theoretically spam servers by having a extremely long name and author, this prevents that.
+            return Id.Length > 25 ? Id.Substring(0, 25) : Id; // Someone could theoretically spam servers by having a extremely long name and author, this prevents that.
         }
     }
 }
