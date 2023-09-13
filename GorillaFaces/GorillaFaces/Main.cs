@@ -8,12 +8,12 @@ namespace GorillaFaces
 {
     [BepInPlugin("crafterbot.gorillafaces", "GorillaFaces", "1.0.3"), BepInDependency("tonimacaroni.computerinterface"), BepInDependency("dev.auros.bepinex.bepinject")]
     [BepInIncompatibility("com.dev9998.gorillatag.devblinkmod")]
-    internal class Main : BaseUnityPlugin
+    public class Main : BaseUnityPlugin
     {
-        internal const string PropertyKey = "GorillaFaces";
+        public const string PropertyKey = "GorillaFaces";
 
         private static Main _instance;
-        internal Main()
+        public Main()
         {
             _instance = this;
             Configuration.Init(Config);
@@ -22,16 +22,14 @@ namespace GorillaFaces
             new HarmonyLib.Harmony(Info.Metadata.GUID).PatchAll(typeof(Patches));
         }
 
-        internal static void Log(object data, BepInEx.Logging.LogLevel logLevel = BepInEx.Logging.LogLevel.Info)
+        public static void Log(object data, BepInEx.Logging.LogLevel logLevel = BepInEx.Logging.LogLevel.Info)
         {
-#if DEBUG
             if (_instance is object)
             {
                 _instance.Logger.Log(logLevel, data);
                 return;
             }
             UnityEngine.Debug.Log(" [Gorilla Faces]: " + data);
-#endif
         }
     }
 }
