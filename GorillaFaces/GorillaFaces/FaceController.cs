@@ -6,6 +6,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
+using Photon.Pun;
 
 namespace GorillaFaces
 {
@@ -16,7 +17,7 @@ namespace GorillaFaces
 
         /* VRRig equiping controllers */
 
-        internal static void UnEquipFace(Player player)
+        public static void UnEquipFace(Player player)
         {
             VRRig Rig = FindVRRigForPlayer(player);
             if (Rig is object)
@@ -30,15 +31,13 @@ namespace GorillaFaces
         /// <summary>
         /// Attempts to equip a face to the client, if the player doesn't have the mod it will unequip current face to clean up.
         /// </summary>
-        internal static void AttemptEquip(Player player)
+        public static void AttemptEquip(Player player)
         {
-            if (player.CustomProperties.TryGetValue(Main.PropertyKey, out object value))
-                EquipFace(player, (string)value);
-            else
-                UnEquipFace(player);
+            if (player.CustomProperties.TryGetValue(Main.PropertyKey, out object value)) EquipFace(player, (string)value);
+            else UnEquipFace(player);
         }
 
-        internal static void EquipFace(Player player, string Id)
+        public static void EquipFace(Player player, string Id)
         {
             VRRig Rig = FindVRRigForPlayer(player);
             if (Rig is object)
@@ -49,7 +48,7 @@ namespace GorillaFaces
             Main.Log("Player rig not found: " + player.NickName, BepInEx.Logging.LogLevel.Error);
         }
 
-        internal static void EquipFace(VRRig Rig, string Id)
+        public static void EquipFace(VRRig Rig, string Id)
         {
             if (!_facesLoaded)
             {
@@ -71,7 +70,7 @@ namespace GorillaFaces
             BodyRenderer.material = NewMaterial;
         }
 
-        internal static VRRig FindVRRigForPlayer(Player player)
+        public static VRRig FindVRRigForPlayer(Player player)
         {
             return GorillaGameManager.StaticFindRigForPlayer(player); // :P - I feel like this was made for modding
         }
@@ -79,7 +78,7 @@ namespace GorillaFaces
 
         /* Data retreaving & formatting */
 
-        internal static async void LoadFaces()
+        public static async void LoadFaces()
         {
             Main.Log("Loading faces...");
             CachedFaces.Clear();
@@ -141,7 +140,22 @@ namespace GorillaFaces
 
         internal static void UpdateCustomProperties()
         {
-            Photon.Pun.PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { Main.PropertyKey, Configuration.SelectedFace.Value } });
+            string selectedFace = Configuration.SelectedFace.Value;
+            var hashTable = new ExitGames.Client.Photon.Hashtable() { { Main.PropertyKey, selectedFace } };
+            if (hashTable is null)
+            {
+                Main.Log("A fatal error has occured whilst attempting to update the custom properties. Face:" + selectedFace, BepInEx.Logging.LogLevel.Fatal);
+                throw;
+            }
+            PhotonNetwork.LocalPlayer.SetCustomProperties(hashTable);
+
+            // Since Utilla experienced a problem where it would ban the user by breaking the hash table I want to be extra careful.
+            if (PhotonNetwork.LocalPlayer.CustomProperties is null || !Photon.Pun.PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("didTutorial"))
+            {
+                Main.Log("Quitting application! It appears that the hashtable is either null or missing a core property.");
+                PhotonNetwork.Disconnect(); // Prevents tag lag or other issues if the player is the master.
+                UnityEngine.Application.Quit();
+            }
         }
 
         private static string GetId(CustomFace customFaceModel)
@@ -156,14 +170,3 @@ namespace GorillaFaces
         }
     }
 }
-
-/*        
-        internal static VRRig FindVRRigForPlayer(Player player)
-        {
-            if (GorillaGameManager.instance is object)
-            {
-                return GorillaGameManager.instance.FindPlayerVRRig(player);
-            }
-        return GameObject.FindObjectsOfType<VRRig>().First(x => Traverse.Create(x).Field("photonView").GetValue<PhotonView>().Owner == player && !x.isOfflineVRRig);
-    }
-*/
