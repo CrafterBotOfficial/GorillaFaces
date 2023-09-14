@@ -3,7 +3,7 @@ using Zenject;
 
 namespace GorillaFaces.Interface
 {
-    internal class MainInstaller : Installer
+    public class MainInstaller : Installer
     {
         public override void InstallBindings()
         {
