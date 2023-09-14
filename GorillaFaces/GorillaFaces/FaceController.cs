@@ -12,7 +12,7 @@ namespace GorillaFaces
 {
     public static class FaceController
     {
-        private static bool _facesLoaded;
+        private static bool FacesLoaded;
         internal static Dictionary<string, CustomFace> CachedFaces = new Dictionary<string, CustomFace>();
 
         /* VRRig equiping controllers */
@@ -50,7 +50,7 @@ namespace GorillaFaces
 
         public static void EquipFace(VRRig Rig, string Id)
         {
-            if (!_facesLoaded)
+            if (!FacesLoaded)
             {
                 Main.Log("Faces not loaded yet, this is a bit of a problem...", BepInEx.Logging.LogLevel.Error);
                 return;
@@ -130,7 +130,7 @@ namespace GorillaFaces
             }
 
             Main.Log("Loaded " + CachedFaces.Count + " faces");
-            _facesLoaded = true;
+            FacesLoaded = true;
 
             // Append To Offline On Finish
             Main.Log("Auto appending face to offline VR rig.");
