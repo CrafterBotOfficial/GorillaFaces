@@ -1,7 +1,3 @@
-﻿/*
-    Fix incompatbility with holdablepad *done?*
-    Redo networking code for joining and player joining **done**
-*/
 using BepInEx;
 
 namespace GorillaFaces
@@ -12,10 +8,10 @@ namespace GorillaFaces
     {
         public const string PropertyKey = "GorillaFaces";
 
-        private static Main _instance;
+        private static Main Instance;
         public Main()
         {
-            _instance = this;
+            Instance = this;
             Configuration.Init(Config);
 
             Bepinject.Zenjector.Install<Interface.MainInstaller>().OnProject();
@@ -26,7 +22,7 @@ namespace GorillaFaces
         {
             if (_instance is object)
             {
-                _instance.Logger.Log(logLevel, data);
+                Instance.Logger.Log(logLevel, data);
                 return;
             }
             UnityEngine.Debug.Log(" [Gorilla Faces]: " + data);
