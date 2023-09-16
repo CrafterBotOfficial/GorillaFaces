@@ -148,14 +148,6 @@ namespace GorillaFaces
                 throw;
             }
             PhotonNetwork.LocalPlayer.SetCustomProperties(hashTable);
-
-            // Since Utilla experienced a problem where it would ban the user by breaking the hash table I want to be extra careful.
-            if (PhotonNetwork.LocalPlayer.CustomProperties is null || !Photon.Pun.PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("didTutorial"))
-            {
-                Main.Log("Quitting application! It appears that the hashtable is either null or missing a core property.");
-                PhotonNetwork.Disconnect(); // Prevents tag lag or other issues if the player is the master.
-                UnityEngine.Application.Quit();
-            }
         }
 
         private static string GetId(CustomFace customFaceModel)
