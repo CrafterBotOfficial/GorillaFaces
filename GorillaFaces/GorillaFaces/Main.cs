@@ -1,31 +1,23 @@
 using BepInEx;
 
-namespace GorillaFaces
+namespace GorillaFaces;
+
+[BepInPlugin("crafterbot.gorillafaces", "GorillaFaces", "1.0.4")]
+[BepInIncompatibility("com.dev9998.gorillatag.devblinkmod")]
+public class Main : BaseUnityPlugin
 {
-    [BepInPlugin("crafterbot.gorillafaces", "GorillaFaces", "1.0.3"), BepInDependency("tonimacaroni.computerinterface"), BepInDependency("dev.auros.bepinex.bepinject")]
-    [BepInIncompatibility("com.dev9998.gorillatag.devblinkmod")]
-    public class Main : BaseUnityPlugin
+    private static Main instance;
+
+    public void Awake()
     {
-        public const string PropertyKey = "GorillaFaces";
+        instance = this;
+        Configuration.Init(Config);
 
-        private static Main Instance;
-        public Main()
-        {
-            Instance = this;
-            Configuration.Init(Config);
+        new HarmonyLib.Harmony(Info.Metadata.GUID).PatchAll();
+    }
 
-            Bepinject.Zenjector.Install<Interface.MainInstaller>().OnProject();
-            new HarmonyLib.Harmony(Info.Metadata.GUID).PatchAll(typeof(Patches));
-        }
-
-        public static void Log(object data, BepInEx.Logging.LogLevel logLevel = BepInEx.Logging.LogLevel.Info)
-        {
-            if (_instance is object)
-            {
-                Instance.Logger.Log(logLevel, data);
-                return;
-            }
-            UnityEngine.Debug.Log(" [Gorilla Faces]: " + data);
-        }
+    public static void Log(object message, BepInEx.Logging.LogLevel level = BepInEx.Logging.LogLevel.Info)
+    {
+        instance?.Logger.Log(level, message);
     }
 }
